@@ -7,8 +7,6 @@ export const metadata = {
   title: 'Leitor de Código de Barras',
   description: 'Aplicativo para ler números de códigos de barras através da câmera do smartphone',
   manifest: '/manifest.json',
-  themeColor: '#3b82f6',
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
@@ -24,6 +22,14 @@ export const metadata = {
     'apple-mobile-web-app-status-bar-style': 'default',
     'apple-mobile-web-app-title': 'Leitor Barras'
   }
+}
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  themeColor: '#3b82f6'
 }
 
 export default function RootLayout({
