@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import BarcodeNumberReader from './components/BarcodeNumberReader'
 import CodeList from './components/CodeList'
+import PWAInstallPrompt from './components/PWAInstallPrompt'
 
 export default function Home() {
   const [scannedNumbers, setScannedNumbers] = useState<string[]>([])
@@ -65,6 +66,8 @@ export default function Home() {
           onClearAll={clearAllNumbers}
         />
       </div>
+      
+      <PWAInstallPrompt />
     </main>
   )
 }
