@@ -122,13 +122,13 @@ const BarcodeNumberReader: React.FC<BarcodeNumberReaderProps> = ({ onNumberDetec
                   tessedit_char_whitelist: '0123456789',
                   tessedit_pageseg_mode: '8', // Tratar como uma única palavra
                   tessedit_ocr_engine_mode: '1' // Neural nets LSTM engine
-                }
+                } as any
               )
               
               // Extrair sequências de números
               const numbers = text.match(/\d{8,}/g) // Pelo menos 8 dígitos consecutivos
               if (numbers && numbers.length > 0) {
-                const longestNumber = numbers.reduce((a, b) => a.length > b.length ? a : b)
+                const longestNumber = numbers.reduce((a: string, b: string) => a.length > b.length ? a : b)
                 if (longestNumber.length >= 8 && longestNumber !== lastDetection) {
                   handleDetection(longestNumber, 'OCR')
                 }
@@ -201,8 +201,8 @@ const BarcodeNumberReader: React.FC<BarcodeNumberReaderProps> = ({ onNumberDetec
             {
               logger: () => {},
               tessedit_char_whitelist: '0123456789',
-              tesseract_pageseg_mode: '8'
-            }
+              tessedit_pageseg_mode: '8'
+            } as any
           )
           
           const numbers = text.match(/\d+/g)

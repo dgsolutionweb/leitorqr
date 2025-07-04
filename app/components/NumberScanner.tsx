@@ -66,7 +66,7 @@ const NumberScanner: React.FC<NumberScannerProps> = ({ onNumberDetected }) => {
                   logger: () => {}, // Silenciar logs
                   tessedit_char_whitelist: '0123456789',
                   tessedit_pageseg_mode: '6'
-                }
+                } as any
               )
               
               // Extrair números da string
@@ -124,7 +124,7 @@ const NumberScanner: React.FC<NumberScannerProps> = ({ onNumberDetected }) => {
               logger: () => {},
               tessedit_char_whitelist: '0123456789',
               tessedit_pageseg_mode: '6'
-            }
+            } as any
           )
           
           const numbers = text.match(/\d+/g)
