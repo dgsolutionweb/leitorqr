@@ -15,6 +15,10 @@ export default function Home() {
     }
   }
 
+  const handleScanComplete = () => {
+    setIsScanning(false)
+  }
+
   const removeNumber = (index: number) => {
     setScannedNumbers(prev => prev.filter((_, i) => i !== index))
   }
@@ -54,7 +58,10 @@ export default function Home() {
           </div>
 
           {isScanning && (
-            <BarcodeNumberReader onNumberDetected={addNumber} />
+            <BarcodeNumberReader 
+              onNumberDetected={addNumber} 
+              onScanComplete={handleScanComplete}
+            />
           )}
         </div>
 

@@ -4,15 +4,17 @@ import { useEffect, useRef, useState } from 'react'
 
 interface BarcodeNumberReaderProps {
   onNumberDetected: (number: string) => void
+  onScanComplete?: () => void
 }
 
-const BarcodeNumberReader: React.FC<BarcodeNumberReaderProps> = ({ onNumberDetected }) => {
+const BarcodeNumberReader: React.FC<BarcodeNumberReaderProps> = ({ onNumberDetected, onScanComplete }) => {
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [isActive, setIsActive] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [lastDetection, setLastDetection] = useState<string>('')
   const [detectionMethod, setDetectionMethod] = useState<string>('')
+  const [shouldContinueScanning, setShouldContinueScanning] = useState(true)
   const streamRef = useRef<MediaStream | null>(null)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
   const detectionTimeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -93,6 +95,8 @@ const BarcodeNumberReader: React.FC<BarcodeNumberReaderProps> = ({ onNumberDetec
       })
 
       Quagga.onDetected((data: any) => {
+        if (!shouldContinueScanning) return
+        
         const code = data.codeResult.code
         if (code && code !== lastDetection) {
           handleDetection(code, 'Código de Barras')
@@ -102,6 +106,8 @@ const BarcodeNumberReader: React.FC<BarcodeNumberReaderProps> = ({ onNumberDetec
 
     const startOCR = () => {
       intervalRef.current = setInterval(async () => {
+        if (!shouldContinueScanning) return
+        
         if (videoRef.current && canvasRef.current && Tesseract) {
           const video = videoRef.current
           const canvas = canvasRef.current
@@ -142,13 +148,34 @@ const BarcodeNumberReader: React.FC<BarcodeNumberReaderProps> = ({ onNumberDetec
     }
 
     const handleDetection = (number: string, method: string) => {
+      if (!shouldContinueScanning) return
+      
       setLastDetection(number)
       setDetectionMethod(method)
       onNumberDetected(number)
       
+      // Parar escaneamento após detectar
+      setShouldContinueScanning(false)
+      
       // Vibração
       if (navigator.vibrate) {
         navigator.vibrate([200, 100, 200])
+      }
+      
+      // Parar Quagga
+      if (Quagga) {
+        Quagga.stop()
+      }
+      
+      // Parar OCR
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+        intervalRef.current = null
+      }
+      
+      // Notificar que o scan foi completado
+      if (onScanComplete) {
+        onScanComplete()
       }
       
       // Limpar timeout anterior
